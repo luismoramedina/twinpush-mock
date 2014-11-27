@@ -24,7 +24,7 @@ public class ServerRunner {
     // Base URI the Grizzly HTTP server will listen on
 
     //https://app.twinpush.com/api/v2/apps/%APPID%/notifications
-    public static final String BASE_URI = "http://localhost:8081/";
+    public static final String BASE_URI = "http://0.0.0.0:8081/";
     public static final String APPS_URI = BASE_URI + "api/v2/apps/";
 
     private static class TrustAllCerts implements X509TrustManager {
