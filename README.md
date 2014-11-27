@@ -16,3 +16,16 @@ Generate a new jersey project:
 ------------------------------
 mvn archetype:generate -DarchetypeArtifactId=jersey-quickstart-grizzly2 -DarchetypeGroupId=org.glassfish.jersey.archetypes -DinteractiveMode=false -DgroupId=com.example -DartifactId=simple-service -Dpackage=com.example -DarchetypeVersion=2.13
 
+Apache Https Configuration:
+---------------------------
+Listen 80
+
+ProxyPass / http://localhost:8081/
+ProxyPassReverse / http://localhost:8081/
+
+Listen 443
+<VirtualHost *:443>
+    SSLEngine on
+    SSLCertificateFile c:\data\programs\Apache24\conf\ssl\server.crt
+    SSLCertificateKeyFile c:\data\programs\Apache24\conf\ssl\server.key
+</VirtualHost>
