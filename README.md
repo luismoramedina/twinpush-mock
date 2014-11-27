@@ -24,8 +24,14 @@ ProxyPass / http://localhost:8081/
 ProxyPassReverse / http://localhost:8081/
 
 Listen 443
+
 \<VirtualHost *:443\>
-    SSLEngine on
-    SSLCertificateFile c:\data\programs\Apache24\conf\ssl\server.crt
-    SSLCertificateKeyFile c:\data\programs\Apache24\conf\ssl\server.key
+
+SSLEngine on
+
+SSLCertificateFile c:\data\programs\Apache24\conf\ssl\server.crt
+
+SSLCertificateKeyFile c:\data\programs\Apache24\conf\ssl\server.key
+
 \<\/VirtualHost\>
+
