@@ -17,7 +17,7 @@ public class TwinPushNotifications {
     /**
      * @param applicationId path param
      * @param twinPushToken json payload as querystring "X-TwinPush-REST-API-Token" param
-     * @param payload json payload as querystring "payload" param
+     * @param payload       json payload as querystring "payload" param
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,7 +44,11 @@ public class TwinPushNotifications {
 
         Gson gson = getGson();
 
-        System.out.format("\nMessage received from application %s... \n %s", applicationId, payload);
+        System.out.format("\n###############################" +
+                        "\nMessage received from application '%s' and token '%s'" +
+                        "\n%s" +
+                        "\n###############################\n",
+                applicationId, twinPushToken, payload);
 
         ArrayList<String> devices_ids;
         try {
@@ -53,6 +57,7 @@ public class TwinPushNotifications {
             String alert = (String) notification.get("alert");
             devices_ids = (ArrayList<String>) notification.get("devices_ids");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UnprocessableEntityException(getErrorResponse(
                     "NotificationNotCreated",
                     "Some of the parameters given when trying to create a notification is not valid"));
@@ -65,16 +70,18 @@ public class TwinPushNotifications {
     }
 
     private String getErrorResponse(final String errorType, final String detailedErrorMessage) {
-        return "{\n" +
+        String error = "{\n" +
                 "  \"errors\": {\n" +
                 "   \"type\": \"" + errorType + "\"\n" +
                 "   \"message\": \"" + detailedErrorMessage + "\",\n" +
                 " }\n" +
                 "}";
+        System.out.println("Return ERROR:" + error);
+        return error;
     }
 
     private String getOkResponse(String applicationId) {
-        return "{\n" +
+        String response = "{\n" +
                 "  \"objects\": [\n" +
                 "   {\n" +
                 "     \"id\": \"" + applicationId + "\",\n" +
@@ -89,6 +96,8 @@ public class TwinPushNotifications {
                 " ],\n" +
                 " \"references\": []\n" +
                 "}";
+        System.out.println("response = " + response);
+        return response;
     }
 
     private void validateRequest(String applicationId, String twinPushToken, ArrayList<String> deviceIds) {

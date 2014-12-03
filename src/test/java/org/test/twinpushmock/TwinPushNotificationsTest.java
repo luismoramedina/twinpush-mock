@@ -103,7 +103,7 @@ public class TwinPushNotificationsTest {
         byte[] b = new byte[entity.available()];
         entity.read(b);
         String data = new String(b);
-        System.out.println("data:" + data);
+        System.out.println("Data read from client:" + data);
         return data;
     }
 }
