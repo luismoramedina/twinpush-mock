@@ -6,6 +6,7 @@ Mock for Twinpush Rest Services
 Run server forever:
 -------------------
 mvn exec:java -Dexec.mainClass="org.test.twinpushmock.ServerRunner"
+
 mvn exec:java
 
 Request:
@@ -24,8 +25,14 @@ ProxyPass / http://localhost:8081/
 ProxyPassReverse / http://localhost:8081/
 
 Listen 443
-<VirtualHost *:443>
-    SSLEngine on
-    SSLCertificateFile c:\data\programs\Apache24\conf\ssl\server.crt
-    SSLCertificateKeyFile c:\data\programs\Apache24\conf\ssl\server.key
-</VirtualHost>
+
+\<VirtualHost *:443\>
+
+SSLEngine on
+
+SSLCertificateFile c:\data\programs\Apache24\conf\ssl\server.crt
+
+SSLCertificateKeyFile c:\data\programs\Apache24\conf\ssl\server.key
+
+\<\/VirtualHost\>
+
