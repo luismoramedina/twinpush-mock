@@ -6,14 +6,25 @@ public class Model {
 
     static ArrayList<String> apps = new ArrayList<>();
     static ArrayList<String> devices = new ArrayList<>();
+    static ArrayList<String> tokens = new ArrayList<>();
 
     static {
         apps.add("app1");
         apps.add("app2");
+        apps.add("pruebaAppId");
 
+        devices.add("dev1");
         devices.add("device1");
         devices.add("device2");
         devices.add("2b3c4d5f6g");
+
+        tokens.add("token1");
+        tokens.add("token2");
+        tokens.add("token3");
+        tokens.add("token4");
+        tokens.add("asdfg");
+        tokens.add("asdf");
+        tokens.add("12345");
     }
 
 
@@ -27,6 +38,10 @@ public class Model {
 
     public static boolean existsDevice(String deviceId) {
         return devices.contains(deviceId);
+    }
+
+    public static boolean existsToken(String token) {
+        return tokens.contains(token);
     }
 
     public static boolean existsDevices(ArrayList<String> deviceIds) {

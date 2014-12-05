@@ -45,10 +45,10 @@ public class TwinPushNotifications {
         Gson gson = getGson();
 
         System.out.format("\n###############################" +
-                        "\nMessage received from application '%s' and token '%s'" +
+                        "\n%s --> Message received from application '%s' and token '%s'" +
                         "\n%s" +
                         "\n###############################\n",
-                applicationId, twinPushToken, payload);
+                new java.util.Date().toString(), applicationId, twinPushToken, payload);
 
         ArrayList<String> devices_ids;
         try {
@@ -102,7 +102,7 @@ public class TwinPushNotifications {
 
     private void validateRequest(String applicationId, String twinPushToken, ArrayList<String> deviceIds) {
 
-        if (twinPushToken == null || twinPushToken.isEmpty()) {
+        if (twinPushToken == null || twinPushToken.isEmpty() || !Model.existsToken(twinPushToken)) {
             throw new ForbiddenException(getErrorResponse(
                     "InvalidToken",
                     "API Key Token is not valid or does not match with App ID"));
