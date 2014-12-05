@@ -4,15 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.StringMap;
 import org.test.twinpushmock.data.Model;
+import org.test.twinpushmock.exception.ExceptionBuilder;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 
 @Path("{applicationId}/notifications")
 public class TwinPushNotifications {
 
+    ExceptionBuilder exceptionBuilder = new ExceptionBuilder();
 
     /**
      * @param applicationId path param
@@ -58,9 +59,7 @@ public class TwinPushNotifications {
             devices_ids = (ArrayList<String>) notification.get("devices_ids");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new UnprocessableEntityException(getErrorResponse(
-                    "NotificationNotCreated",
-                    "Some of the parameters given when trying to create a notification is not valid"));
+            throw exceptionBuilder.getNotificationNotCreated();
         }
 
         validateRequest(applicationId, twinPushToken, devices_ids);
@@ -69,16 +68,6 @@ public class TwinPushNotifications {
         return getOkResponse(applicationId);
     }
 
-    private String getErrorResponse(final String errorType, final String detailedErrorMessage) {
-        String error = "{\n" +
-                "  \"errors\": {\n" +
-                "   \"type\": \"" + errorType + "\"\n" +
-                "   \"message\": \"" + detailedErrorMessage + "\",\n" +
-                " }\n" +
-                "}";
-        System.out.println("Return ERROR:" + error);
-        return error;
-    }
 
     private String getOkResponse(String applicationId) {
         String response = "{\n" +
@@ -102,47 +91,33 @@ public class TwinPushNotifications {
 
     private void validateRequest(String applicationId, String twinPushToken, ArrayList<String> deviceIds) {
 
+        if (deviceIds != null && deviceIds.size() > 0) {
+            for (String deviceId : deviceIds) {
+                if (deviceId.startsWith("error:")) {
+                    throw exceptionBuilder.getExceptionByType(deviceId.split(":")[1]);
+                }
+            }
+        }
+
         if (twinPushToken == null || twinPushToken.isEmpty() || !Model.existsToken(twinPushToken)) {
-            throw new ForbiddenException(getErrorResponse(
-                    "InvalidToken",
-                    "API Key Token is not valid or does not match with App ID"));
+            throw exceptionBuilder.getInvalidTokenException();
         }
 
         if (!Model.existsApp(applicationId)) {
-            throw new NotFoundException(getErrorResponse(
-                    "AppNotFound",
-                    "Application not found for given application_id"));
+            throw exceptionBuilder.getAppNotFound();
         }
 
         if (!Model.existsDevices(deviceIds)) {
-            throw new NotFoundException(getErrorResponse(
-                    "DeviceNotFound",
-                    "Device not found for given device_id"));
+            throw exceptionBuilder.getDeviceNotFound();
         }
 
     }
+
 
     public Gson getGson() {
         com.google.gson.GsonBuilder gsonBuilder = new GsonBuilder();
         return gsonBuilder.create();
     }
 
-    public class ForbiddenException extends WebApplicationException {
-        public ForbiddenException(String message) {
-            super(Response.status(Response.Status.FORBIDDEN).entity(message).build());
-        }
-    }
-
-    public class NotFoundException extends WebApplicationException {
-        public NotFoundException(String message) {
-            super(Response.status(Response.Status.NOT_FOUND).entity(message).build());
-        }
-    }
-
-    public class UnprocessableEntityException extends WebApplicationException {
-        public UnprocessableEntityException(String message) {
-            super(Response.status(422).entity(message).build());
-        }
-    }
 
 }

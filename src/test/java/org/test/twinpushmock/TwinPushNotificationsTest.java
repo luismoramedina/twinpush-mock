@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TwinPushNotificationsTest {
 
+    String requestForceNotificationNotCreated = "{ 'notification': {'alert': 'Nunca se enviara','devices_ids': ['error:NotificationNotCreated']}}";
     String requestOk = "{ 'notification': {'alert': 'Mensaje a enviar.','devices_ids': ['2b3c4d5f6g']}}";
     String requestDeviceNotFound = "{ 'notification': {'alert': 'Mensaje que no se envia.','devices_ids': ['el4']}}";
 
@@ -64,8 +65,8 @@ public class TwinPushNotificationsTest {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
         map.putSingle("X-TwinPush-REST-API-Token", "INVALID TOKEN");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
-        assertEquals(403, post.getStatus());
         String data = readResponse(post);
+        assertEquals(403, post.getStatus());
         assertTrue(data.contains("InvalidToken"));
     }
 
@@ -74,8 +75,8 @@ public class TwinPushNotificationsTest {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
         map.putSingle("X-TwinPush-REST-API-Token", "TOKEN");
         Response post = client.path("appNOOOOOOOOOO/notifications").request().headers(map).post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
-        assertEquals(404, post.getStatus());
         String data = readResponse(post);
+        assertEquals(404, post.getStatus());
         assertTrue(data.contains("AppNotFound"));
     }
 
@@ -107,6 +108,15 @@ public class TwinPushNotificationsTest {
         String data = readResponse(post);
         assertTrue(data.contains("\"id\": \"app1\""));
         assertTrue(data.contains("\"alert\": \"Test!\""));
+    }
+
+    @Test
+    public void testForceNotificationNotCreatedError() throws IOException {
+        Response post = client.path("app1/notifications").request().post(Entity.entity(requestForceNotificationNotCreated, MediaType.APPLICATION_JSON_TYPE));
+        String data = readResponse(post);
+        assertEquals(422, post.getStatus());
+        assertTrue(data.contains("NotificationNotCreated"));
+
     }
 
     private String readResponse(Response post) throws IOException {

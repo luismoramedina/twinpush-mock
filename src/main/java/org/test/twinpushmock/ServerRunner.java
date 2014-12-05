@@ -91,8 +91,7 @@ public class ServerRunner {
     }
 
     public static void main(String[] args) throws Exception {
-
-        int port = 8081;
+        int port = 8082;
         final HttpServer server = startServer(false, port);
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", buildUri(port)));
