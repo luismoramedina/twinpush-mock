@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class TwinPushNotificationsTest {
 
     String requestForceNotificationNotCreated = "{ 'notification': {'alert': 'Nunca se enviara','devices_ids': ['error:NotificationNotCreated']}}";
+    String requestForceNotificationAppNotFound = "{ 'notification': {'alert': 'Nunca se enviara','devices_ids': ['error:AppNotFound']}}";
     String requestOk = "{ 'notification': {'alert': 'Mensaje a enviar.','devices_ids': ['2b3c4d5f6g']}}";
     String requestDeviceNotFound = "{ 'notification': {'alert': 'Mensaje que no se envia.','devices_ids': ['el4']}}";
 
@@ -116,7 +117,14 @@ public class TwinPushNotificationsTest {
         String data = readResponse(post);
         assertEquals(422, post.getStatus());
         assertTrue(data.contains("NotificationNotCreated"));
+    }
 
+    @Test
+    public void testForceAppNotFoundError() throws IOException {
+        Response post = client.path("app1/notifications").request().post(Entity.entity(requestForceNotificationAppNotFound, MediaType.APPLICATION_JSON_TYPE));
+        String data = readResponse(post);
+        assertEquals(404, post.getStatus());
+        assertTrue(data.contains("AppNotFound"));
     }
 
     private String readResponse(Response post) throws IOException {
