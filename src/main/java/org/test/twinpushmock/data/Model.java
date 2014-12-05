@@ -25,6 +25,7 @@ public class Model {
         tokens.add("asdfg");
         tokens.add("asdf");
         tokens.add("12345");
+        tokens.add("TOKEN");
     }
 
 

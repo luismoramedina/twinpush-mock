@@ -32,7 +32,8 @@ public class TwinPushNotificationsTest {
     @Before
     public void setUp() throws Exception {
         // start the server
-        server = ServerRunner.startServer(false);
+        int port = 9624;
+        server = ServerRunner.startServer(false, port);
         // create the client
         Client c = ClientBuilder.newClient();
 
@@ -42,7 +43,7 @@ public class TwinPushNotificationsTest {
         // --
         // c.configuration().enable(new org.glassfish.jersey.media.json.JsonJaxbFeature());
 
-        client = c.target(ServerRunner.APPS_URI);
+        client = c.target(ServerRunner.buildUri(port));
     }
 
     @After
@@ -53,6 +54,16 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostError403InvalidToken() throws IOException {
         Response post = client.path("app1/notifications").request().post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(403, post.getStatus());
+        String data = readResponse(post);
+        assertTrue(data.contains("InvalidToken"));
+    }
+
+    @Test
+    public void testPostError403InvalidTokenNotNull() throws IOException {
+        MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
+        map.putSingle("X-TwinPush-REST-API-Token", "INVALID TOKEN");
+        Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(403, post.getStatus());
         String data = readResponse(post);
         assertTrue(data.contains("InvalidToken"));

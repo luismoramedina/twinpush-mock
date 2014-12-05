@@ -9,7 +9,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.IOException;
 import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -24,8 +23,8 @@ public class ServerRunner {
     // Base URI the Grizzly HTTP server will listen on
 
     //https://app.twinpush.com/api/v2/apps/%APPID%/notifications
-    public static final String BASE_URI = "http://0.0.0.0:8081/";
-    public static final String APPS_URI = BASE_URI + "api/v2/apps/";
+    public static final String LISTEN_IP = "0.0.0.0";
+    public static final String APPS_URI = "/api/v2/apps/";
 
     private static class TrustAllCerts implements X509TrustManager {
         @Override
@@ -59,20 +58,25 @@ public class ServerRunner {
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
      * @return Grizzly HTTP server.
      */
-    public static HttpServer startServer(boolean secure) throws NoSuchAlgorithmException, KeyManagementException {
+    public static HttpServer startServer(boolean secure, int port) throws NoSuchAlgorithmException, KeyManagementException {
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example package
         final ResourceConfig rc = new ResourceConfig().packages("org.test.twinpushmock.service");
 
         // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
+        // exposing the Jersey application at LISTEN_IP
         HttpServer httpServer;
+        String appsUri = buildUri(port);
         if (!secure) {
-            httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(APPS_URI), rc);
+            httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(appsUri), rc);
         } else {
-            httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(APPS_URI), rc, true, getSslEngineConfig());
+            httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(appsUri), rc, true, getSslEngineConfig());
         }
         return httpServer;
+    }
+
+    public static String buildUri(int port) {
+        return "http://" + LISTEN_IP + ":" + port + APPS_URI;
     }
 
     private static SSLContextConfigurator getSSLContext() {
@@ -88,9 +92,10 @@ public class ServerRunner {
 
     public static void main(String[] args) throws Exception {
 
-        final HttpServer server = startServer(false);
+        int port = 8081;
+        final HttpServer server = startServer(false, port);
         System.out.println(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", APPS_URI));
+                + "%sapplication.wadl\nHit enter to stop it...", buildUri(port)));
         System.in.read();
         server.shutdown();
     }
