@@ -55,6 +55,11 @@ public class TwinPushNotifications {
         try {
             StringMap data = (StringMap) gson.fromJson(payload, Object.class);
             StringMap notification = (StringMap) data.get("notification");
+
+            if (notification == null) {
+                notification = data;
+            }
+
             String alert = (String) notification.get("alert");
             devices_ids = (ArrayList<String>) notification.get("devices_ids");
         } catch (Exception e) {

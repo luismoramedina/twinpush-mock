@@ -23,10 +23,15 @@ import static org.junit.Assert.assertTrue;
 
 public class TwinPushNotificationsTest {
 
-    String requestForceNotificationNotCreated = "{ 'notification': {'alert': 'Nunca se enviara','devices_ids': ['error:NotificationNotCreated']}}";
-    String requestForceNotificationAppNotFound = "{ 'notification': {'alert': 'Nunca se enviara','devices_ids': ['error:AppNotFound']}}";
-    String requestOk = "{ 'notification': {'alert': 'Mensaje a enviar.','devices_ids': ['2b3c4d5f6g']}}";
-    String requestDeviceNotFound = "{ 'notification': {'alert': 'Mensaje que no se envia.','devices_ids': ['el4']}}";
+    String requestForceNotificationNotCreatedOldSchool = "{ 'notification': {'alert': 'Nunca se enviara','devices_ids': ['error:NotificationNotCreated']}}";
+    String requestForceNotificationAppNotFoundOldSchool = "{ 'notification': {'alert': 'Nunca se enviara','devices_ids': ['error:AppNotFound']}}";
+    String requestOkOldSchool = "{ 'notification': {'alert': 'Mensaje a enviar.','devices_ids': ['2b3c4d5f6g']}}";
+    String requestDeviceNotFoundOldSchool = "{ 'notification': {'alert': 'Mensaje que no se envia.','devices_ids': ['el4']}}";
+
+    String requestForceNotificationNotCreated = "{'alert': 'Nunca se enviara','devices_ids': ['error:NotificationNotCreated']}";
+    String requestForceNotificationAppNotFound = "{'alert': 'Nunca se enviara','devices_ids': ['error:AppNotFound']}";
+    String requestOk = "{'alert': 'Mensaje a enviar.','devices_ids': ['2b3c4d5f6g']}";
+    String requestDeviceNotFound = "{'alert': 'Mensaje que no se envia.','devices_ids': ['el4']}";
 
     private HttpServer server;
     private WebTarget client;
@@ -99,6 +104,16 @@ public class TwinPushNotificationsTest {
         assertEquals(422, post.getStatus());
         String data = readResponse(post);
         assertTrue(data.contains("NotificationNotCreated"));
+    }
+
+    @Test
+    public void testPostOkOldSchool() throws IOException {
+        MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
+        map.putSingle("X-TwinPush-REST-API-Token", "TOKEN");
+        Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOkOldSchool, MediaType.APPLICATION_JSON_TYPE));
+        String data = readResponse(post);
+        assertTrue(data.contains("\"id\": \"app1\""));
+        assertTrue(data.contains("\"alert\": \"Test!\""));
     }
 
     @Test
