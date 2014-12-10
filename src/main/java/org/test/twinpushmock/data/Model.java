@@ -12,11 +12,13 @@ public class Model {
         apps.add("app1");
         apps.add("app2");
         apps.add("pruebaAppId");
+        apps.add("ebec1bf4a328564d");
 
         devices.add("dev1");
         devices.add("device1");
         devices.add("device2");
         devices.add("2b3c4d5f6g");
+        devices.add("be0cbc4b90a805c0");
 
         tokens.add("token1");
         tokens.add("token2");
