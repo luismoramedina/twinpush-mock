@@ -28,8 +28,11 @@ public class TwinPushNotificationsTest {
     String requestOkOldSchool = "{ 'notification': {'alert': 'Mensaje a enviar.','devices_ids': ['2b3c4d5f6g']}}";
     String requestDeviceNotFoundOldSchool = "{ 'notification': {'alert': 'Mensaje que no se envia.','devices_ids': ['el4']}}";
 
+    String requestForceInvalidCreatorToken = "{'alert': 'Nunca se enviara','devices_ids': ['error:InvalidCreatorToken']}";
     String requestForceNotificationNotCreated = "{'alert': 'Nunca se enviara','devices_ids': ['error:NotificationNotCreated']}";
     String requestForceNotificationAppNotFound = "{'alert': 'Nunca se enviara','devices_ids': ['error:AppNotFound']}";
+    String requestOkDelia = "{\"alert\":\"Hola Chris soy Delia. Estoy probando...\",\"devices_ids\":[\"be0cbc4b90a805c0\"]}";
+
     String requestOk = "{'alert': 'Mensaje a enviar.','devices_ids': ['2b3c4d5f6g']}";
     String requestDeviceNotFound = "{'alert': 'Mensaje que no se envia.','devices_ids': ['el4']}";
 
@@ -64,11 +67,11 @@ public class TwinPushNotificationsTest {
         assertEquals(403, post.getStatus());
         String data = readResponse(post);
         assertTrue(data.contains("InvalidToken"));
-    }
+}
 
     @Test
     public void testPostError403InvalidTokenNotNull() throws IOException {
-        MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
+    MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
         map.putSingle("X-TwinPush-REST-API-Token", "INVALID TOKEN");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
         String data = readResponse(post);
@@ -127,11 +130,29 @@ public class TwinPushNotificationsTest {
     }
 
     @Test
+    public void testPostOkDelia() throws IOException {
+        MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
+        map.putSingle("X-TwinPush-REST-API-Token", "39ee8cd9dc3070a2bfe900e18bce58ac");
+        Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOkDelia, MediaType.APPLICATION_JSON_TYPE));
+        String data = readResponse(post);
+        assertTrue(data.contains("\"id\": \"app1\""));
+        assertTrue(data.contains("\"alert\": \"Test!\""));
+    }
+
+    @Test
     public void testForceNotificationNotCreatedError() throws IOException {
         Response post = client.path("app1/notifications").request().post(Entity.entity(requestForceNotificationNotCreated, MediaType.APPLICATION_JSON_TYPE));
         String data = readResponse(post);
         assertEquals(422, post.getStatus());
         assertTrue(data.contains("NotificationNotCreated"));
+    }
+
+    @Test
+    public void testForceNotificationForceInvalidCreatorToken() throws IOException {
+        Response post = client.path("app1/notifications").request().post(Entity.entity(requestForceInvalidCreatorToken, MediaType.APPLICATION_JSON_TYPE));
+        String data = readResponse(post);
+        assertEquals(403, post.getStatus());
+        assertTrue(data.contains("InvalidCreatorToken"));
     }
 
     @Test

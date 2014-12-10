@@ -16,6 +16,9 @@ public class ExceptionBuilder {
         exceptionMap.put("InvalidToken", new ForbiddenException(getErrorResponse(
                 "InvalidToken",
                 "API Key Token is not valid or does not match with App ID")));
+        exceptionMap.put("InvalidCreatorToken", new ForbiddenException(getErrorResponse(
+                "InvalidCreatorToken",
+                "Creator api key token is not valid or does not match with the app id")));
         exceptionMap.put("NotificationNotCreated", new UnprocessableEntityException(getErrorResponse(
                 "NotificationNotCreated",
                 "Some of the parameters given when trying to create a notification is not valid")));
