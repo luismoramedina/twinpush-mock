@@ -72,7 +72,7 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostError403InvalidTokenNotNull() throws IOException {
     MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-        map.putSingle("X-TwinPush-REST-API-Token", "INVALID TOKEN");
+        map.putSingle("X-TwinPush-REST-API-Key-Creator", "INVALID TOKEN");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
         String data = readResponse(post);
         assertEquals(403, post.getStatus());
@@ -82,7 +82,7 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostError404AppNotFound() throws IOException {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-        map.putSingle("X-TwinPush-REST-API-Token", "TOKEN");
+        map.putSingle("X-TwinPush-REST-API-Key-Creator", "TOKEN");
         Response post = client.path("appNOOOOOOOOOO/notifications").request().headers(map).post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
         String data = readResponse(post);
         assertEquals(404, post.getStatus());
@@ -92,7 +92,7 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostError404DeviceNotFound() throws IOException {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-        map.putSingle("X-TwinPush-REST-API-Token", "TOKEN");
+        map.putSingle("X-TwinPush-REST-API-Key-Creator", "TOKEN");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestDeviceNotFound, MediaType.APPLICATION_JSON_TYPE));
         assertEquals(404, post.getStatus());
         String data = readResponse(post);
@@ -102,7 +102,7 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostError422NotificationNotCreated() throws IOException {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-        map.putSingle("X-TwinPush-REST-API-Token", "TOKEN");
+        map.putSingle("X-TwinPush-REST-API-Key-Creator", "TOKEN");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE));
         assertEquals(422, post.getStatus());
         String data = readResponse(post);
@@ -112,7 +112,7 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostOkOldSchool() throws IOException {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-        map.putSingle("X-TwinPush-REST-API-Token", "TOKEN");
+        map.putSingle("X-TwinPush-REST-API-Key-Creator", "TOKEN");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOkOldSchool, MediaType.APPLICATION_JSON_TYPE));
         String data = readResponse(post);
         assertTrue(data.contains("\"id\": \"app1\""));
@@ -122,7 +122,7 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostOk() throws IOException {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-        map.putSingle("X-TwinPush-REST-API-Token", "TOKEN");
+        map.putSingle("X-TwinPush-REST-API-Key-Creator", "TOKEN");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOk, MediaType.APPLICATION_JSON_TYPE));
         String data = readResponse(post);
         assertTrue(data.contains("\"id\": \"app1\""));
@@ -132,7 +132,7 @@ public class TwinPushNotificationsTest {
     @Test
     public void testPostOkDelia() throws IOException {
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-        map.putSingle("X-TwinPush-REST-API-Token", "39ee8cd9dc3070a2bfe900e18bce58ac");
+        map.putSingle("X-TwinPush-REST-API-Key-Creator", "188f17de4f58b4121fe0141b42111af9");
         Response post = client.path("app1/notifications").request().headers(map).post(Entity.entity(requestOkDelia, MediaType.APPLICATION_JSON_TYPE));
         String data = readResponse(post);
         assertTrue(data.contains("\"id\": \"app1\""));

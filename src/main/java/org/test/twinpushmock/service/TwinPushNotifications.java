@@ -17,14 +17,14 @@ public class TwinPushNotifications {
 
     /**
      * @param applicationId path param
-     * @param twinPushToken json payload as querystring "X-TwinPush-REST-API-Token" param
+     * @param twinPushToken json payload as querystring "X-TwinPush-REST-API-Key-Creator" param
      * @param payload       json payload as querystring "payload" param
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String notificationReceivedGet(
             @PathParam("applicationId") String applicationId,
-            @QueryParam("X-TwinPush-REST-API-Token") String twinPushToken,
+            @QueryParam("X-TwinPush-REST-API-Key-Creator") String twinPushToken,
             @QueryParam("payload") String payload) {
 
         return doJob(applicationId, twinPushToken, payload);
@@ -34,7 +34,7 @@ public class TwinPushNotifications {
     @Produces(MediaType.APPLICATION_JSON)
     public String notificationReceivedPost(
             @PathParam("applicationId") String applicationId,
-            @HeaderParam("X-TwinPush-REST-API-Token") String twinPushToken,
+            @HeaderParam("X-TwinPush-REST-API-Key-Creator") String twinPushToken,
             byte[] payload) {
 
         return doJob(applicationId, twinPushToken, new String(payload));
